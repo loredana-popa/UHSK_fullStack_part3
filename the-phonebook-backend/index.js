@@ -36,15 +36,18 @@ app.get('/api/persons', (request, response) => {
 
 app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
-  console.log(typeof id)
   const person = persons.find(person => person.id === id)
-  console.log(person)
   if (person) {
     response.json(person)
   } else {
     response.status(404).end()
   }
-  
+})
+
+app.delete('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  persons = persons.filter(person => person.id !== id)
+  response.status(204).end()
 })
 
 const entriesNr =  persons.length
