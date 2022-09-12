@@ -1,7 +1,9 @@
 
-const { response } = require('express')
+const { response, request } = require('express')
 const express = require('express')
 const app = express()
+
+app.use(express.json())
 
 let persons = [
     { 
@@ -50,10 +52,35 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
-const entriesNr =  persons.length
-const date = new Date()
+const generateId = () => {
+  const nr = Math.floor(Math.random() * 1000);
+    return nr
+}
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+  console.log(body)
+
+  if(!body) {
+    return response.status(404).json({
+      error:'content missing'
+    })
+  }
+
+  const person = {
+    id : generateId(),
+    name : body.name,
+    number : body.number
+  }
+
+  persons = persons.concat(person)
+
+  response.json(person)
+})
 
 app.get('/info', (request, response) => {
+  const entriesNr =  persons.length
+  const date = new Date()
   response.send(
     `<html> <p>Phonebook has info for ${entriesNr} people</p><p>${date}</p></html>`  )
 })
@@ -62,4 +89,3 @@ const PORT = 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
-// this is a new comment
