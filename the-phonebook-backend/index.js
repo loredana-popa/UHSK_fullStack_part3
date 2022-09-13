@@ -5,7 +5,8 @@ const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
-app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'));
+
 
 let persons = [
     { 
@@ -61,6 +62,7 @@ const generateId = () => {
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
+  console.log(body)
   const name = persons.find(person => person.name === body.name)
   
   if(body.name === "" || body.number === "") {
@@ -96,3 +98,6 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
 
+morgan.token('content', function(req, res) {
+  return JSON.stringify(req.body)
+})
