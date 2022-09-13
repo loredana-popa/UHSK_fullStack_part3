@@ -1,9 +1,11 @@
 
 const { response, request } = require('express')
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
+app.use(morgan('tiny'))
 
 let persons = [
     { 
@@ -59,10 +61,8 @@ const generateId = () => {
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
-  console.log(body)
   const name = persons.find(person => person.name === body.name)
-  console.log(name)
-
+  
   if(body.name === "" || body.number === "") {
     return response.status(404).json({
       error:'The name or number is missing'
@@ -71,8 +71,6 @@ app.post('/api/persons', (request, response) => {
     return response.status(404).json({
       error:'name must be unique'
     })
-
-
   }
 
   const person = {
@@ -97,3 +95,4 @@ const PORT = 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
+
