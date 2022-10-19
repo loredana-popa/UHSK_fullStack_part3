@@ -3,10 +3,12 @@ const { response, request } = require('express')
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
+const cors = require('cors')
 
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'));
 
+app.use(cors())
 
 let persons = [
     { 
@@ -93,11 +95,12 @@ app.get('/info', (request, response) => {
     `<html> <p>Phonebook has info for ${entriesNr} people</p><p>${date}</p></html>`  )
 })
 
-const PORT = 3001
+morgan.token('content', function(req, res) {
+  return JSON.stringify(req.body)
+})
+
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
 
-morgan.token('content', function(req, res) {
-  return JSON.stringify(req.body)
-})
