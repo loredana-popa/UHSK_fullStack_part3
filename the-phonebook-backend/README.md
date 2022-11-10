@@ -19,3 +19,8 @@ Copy the *build* directory from the frontend to the root of the backend reposito
 Commit the production build of the frontend to the backend repository, and push the code to Fly.io again.
 The deployment is done with the command:
 `fly deploy` or `flyctl deploy`
+
+## Set the env value from the command line with the command
+
+`fly secrets set MONGODB_URI='mongodb+srv://address here...`
+
