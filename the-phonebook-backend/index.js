@@ -47,8 +47,8 @@ app.get('/api/persons', (request, response) => {
   })
 })
 
-app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
+app.get('/api/persons/:id', (request, response, next) => {
+  const id = request.params.id
   Person.findById(id)
   .then(person => {
     if (person) {
@@ -58,8 +58,7 @@ app.get('/api/persons/:id', (request, response) => {
     }
   })
   .catch(error => {
-    console.log(error)
-    response.status(500).end()
+    next(error)
   })
 })
 
@@ -109,12 +108,24 @@ app.get('/info', (request, response) => {
     `<html> <p>Phonebook has info for ${entriesNr} people</p><p>${date}</p></html>`  )
 })
 
+
 morgan.token('content', function(req, res) {
   return JSON.stringify(req.body)
 })
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+  
+  next(error)
+}
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
 
+app.use(errorHandler)
