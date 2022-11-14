@@ -78,7 +78,7 @@ const generateId = () => {
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
-  console.log(body)
+  // console.log(body)
   const name = persons.find(person => person.name === body.name)
   
   if(body.name === "" || body.number === "") {
@@ -119,10 +119,11 @@ app.put('/api/persons/:id', (request, response, next) => {
 })
 
 app.get('/info', (request, response) => {
-  const entriesNr =  persons.length
   const date = new Date()
-  response.send(
-    `<html> <p>Phonebook has info for ${entriesNr} people</p><p>${date}</p></html>`  )
+  Person.find({}).then(persons =>
+    response.send(
+    `<html> <p>Phonebook has info for ${persons.length} people</p><p>${date}</p></html>`  )
+)
 })
 
 
