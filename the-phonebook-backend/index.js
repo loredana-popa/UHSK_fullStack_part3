@@ -64,6 +64,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
+
   Person.findByIdAndRemove(id)
     .then(result => {
       response.status(204).end()
@@ -71,16 +72,16 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error)) 
 })
 
-const generateId = () => {
-  const nr = Math.floor(Math.random() * 1000);
-    return nr
-}
+// generate a random ID
+// const generateId = () => {
+//   const nr = Math.floor(Math.random() * 1000);
+//     return nr
+// }
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
-  // console.log(body)
   const name = persons.find(person => person.name === body.name)
-  
+
   if(body.name === "" || body.number === "") {
     return response.status(400).json({
       error:'The name or number is missing'
@@ -96,9 +97,11 @@ app.post('/api/persons', (request, response) => {
     number : body.number
   })
 
-  person.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
+  person.save()
+    .then(savedPerson => {
+     response.json(savedPerson)
+    })
+    .catch(error => next(error))
 })
 
 
@@ -131,19 +134,21 @@ morgan.token('content', function(req, res) {
   return JSON.stringify(req.body)
 })
 
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+})
+
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
   }
   
   next(error)
 }
-
-const PORT = process.env.PORT || 3001
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-})
 
 app.use(errorHandler)
