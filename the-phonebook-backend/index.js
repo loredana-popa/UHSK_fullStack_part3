@@ -1,5 +1,4 @@
 require('dotenv').config()
-const { response, request } = require('express')
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
@@ -8,14 +7,12 @@ const Person = require('./models/person')
 
 
 app.use(express.json())
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'));
-
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
 app.use(cors())
-
 app.use(express.static('build'))
 
 app.get('/', (request, response) => {
-    response.send('<h1>Hello World!</h1>')
+  response.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/persons', (request, response) => {
@@ -27,23 +24,23 @@ app.get('/api/persons', (request, response) => {
 app.get('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
   Person.findById(id)
-  .then(person => {
-    if (person) {
-      response.json(person)
-    } else {
-      response.status(404).end()
-    }
-  })
-  .catch(error => {
-    next(error)
-  })
+    .then(person => {
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => {
+      next(error)
+    })
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
 
   Person.findByIdAndRemove(id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error)) 
@@ -53,7 +50,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
-  if(body.name === "" || body.number === "") {
+  if(body.name === '' || body.number === '') {
     return response.status(400).json({
       error:'The name or number is missing'
     })
@@ -66,7 +63,7 @@ app.post('/api/persons', (request, response, next) => {
 
   person.save()
     .then(savedPerson => {
-     response.json(savedPerson)
+      response.json(savedPerson)
     })
     .catch(error => next(error))
 })
@@ -90,20 +87,15 @@ app.put('/api/persons/:id', (request, response, next) => {
 
 app.get('/info', (request, response) => {
   const date = new Date()
-  Person.find({}).then(persons =>
-    response.send(
-    `<html> <p>Phonebook has info for ${persons.length} people</p><p>${date}</p></html>`  )
-)
+  Person.find({})
+    .then(persons =>
+      response.send(
+        `<html> <p>Phonebook has info for ${persons.length} people</p><p>${date}</p></html>`  )
+    )
 })
 
-
-morgan.token('content', function(req, res) {
+morgan.token('content', function(req) {
   return JSON.stringify(req.body)
-})
-
-const PORT = process.env.PORT || 3001
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
 })
 
 const errorHandler = (error, request, response, next) => {
@@ -119,3 +111,8 @@ const errorHandler = (error, request, response, next) => {
 }
 
 app.use(errorHandler)
+
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
