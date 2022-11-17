@@ -1,5 +1,5 @@
 module.exports = {
-    "env": {
+        "env": {
         "node": true,
         "commonjs": true,
         "browser": true,

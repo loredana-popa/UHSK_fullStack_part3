@@ -21,33 +21,31 @@ mongoose
   .connect(url)
   .then(() => {
     if (process.argv.length === 3) {
-    Person
-      .find({})
-      .then(result => {
-        result.forEach(person => {
-          console.log(`${person.name} ${person.number}`)
-        }) 
-        mongoose.connection.close()
-    })}
+      Person
+        .find({})
+        .then(result => {
+          result.forEach(person => {
+            console.log(`${person.name} ${person.number}`)
+          })
+          mongoose.connection.close()
+        })}
     else {
-      
-        const argName = process.argv[3];
-        const argNumber = process.argv[4];
-    
-        const person = new Person({
-          name: argName,
-          number: argNumber,
-        })
 
-        console.log(`added ${argName} ${argNumber} to phonebook`)
-        return person.save()
-    
-      .then(() => {
+      const argName = process.argv[3]
+      const argNumber = process.argv[4]
+
+      const person = new Person({
+        name: argName,
+        number: argNumber,
+      })
+
+      console.log(`added ${argName} ${argNumber} to phonebook`)
+      return person.save().then(() => {
         console.log('person saved!')
         return mongoose.connection.close()
       })
-    
-    } 
+
+    }
   })
 
   .catch((err) => console.log(err))
