@@ -43,7 +43,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .then(() => {
       response.status(204).end()
     })
-    .catch(error => next(error)) 
+    .catch(error => next(error))
 })
 
 
@@ -54,7 +54,7 @@ app.post('/api/persons', (request, response, next) => {
     return response.status(400).json({
       error:'The name or number is missing'
     })
-  } 
+  }
 
   const person = new Person({
     name : body.name,
@@ -106,7 +106,7 @@ const errorHandler = (error, request, response, next) => {
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   }
-  
+
   next(error)
 }
 
