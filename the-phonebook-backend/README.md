@@ -23,4 +23,5 @@ The deployment is done with the command:
 ## Set the env value from the command line with the command
 
 `fly secrets set MONGODB_URI='mongodb+srv://address here...`
+OR `flyctl secrets set MONGODB_URI='mongodb+srv://address here...`
 
