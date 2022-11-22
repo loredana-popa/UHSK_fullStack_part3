@@ -9,7 +9,6 @@ console.log('arg nr', process.argv.length)
 const password = process.argv[2]
 
 const url = `mongodb+srv://loredana:${password}@cluster0.oa1cb03.mongodb.net/phoneBookApp?retryWrites=true&w=majority`
-
 const personSchema = new mongoose.Schema({
   name: String,
   number: String,
